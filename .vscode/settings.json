@@ -1,0 +1,20 @@
+{
+	"Lua.runtime.version": "LuaJIT",
+	"Lua.workspace.library": [
+		"${3rd}/lovr/library"
+	],
+	"Lua.workspace.ignoreDir": [
+		".vscode",
+		"old"
+	],
+	"Lua.workspace.checkThirdParty": false,
+	"files.associations": {
+		"*.t": "lua",
+		"*.rockspec": "lua",
+		"*.peg": "relabel",
+		"*.yasm": "yasm",
+		"*.succ": "yaml",
+		"*.txt": "plaintext",
+		"fpconv.h": "c"
+	}
+}
