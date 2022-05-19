@@ -3,7 +3,7 @@ local ffi = require "ffi"
 
 local LUA_TO_C_TYPE = {
 	number="double",
-	string="const char*",
+	string="char",
 	boolean="bool",
 
 }
@@ -11,9 +11,14 @@ local function ComponentDefToCType(definition)
 	local s = {"struct { "}
 	local first = true
 	for _, field in ipairs(definition) do
-		table.insert(s, LUA_TO_C_TYPE[type(field.default)] .. " " .. field.field .. "; ")
+		table.insert(s,
+		LUA_TO_C_TYPE[type(field.default)] .. " " .. field.field ..
+		(type(field.default) == "string" and ("[" .. field.maxLength .. "]") or "")
+		.. "; "
+	)
 	end
 	table.insert(s, "}")
+	print(table.concat(s))
 	return ffi.typeof(table.concat(s)), ffi.typeof(table.concat(s) .. "*")
 end
 local function CreateComponentPtr(ComponentDef, blob)
@@ -34,7 +39,7 @@ local TestComponentDef = {
 		{field="x", default=0},
 		{field="y", default=0},
 		{field="z", default=0},
-		{field="test", default=""},
+		{field="test", default="", maxLength=64},
 	}
 }
 TestComponentDef.ctype, TestComponentDef.ctypeptr = ComponentDefToCType(TestComponentDef.definition)

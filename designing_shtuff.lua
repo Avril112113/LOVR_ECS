@@ -21,4 +21,4 @@ local channel = lovr.thread.getChannel("designing_shtuff_thread")
 channel:push(componentBlob)
 thread:wait()
 
-print("after thread:", pointer.x, pointer.y, pointer.z, pointer.test)
+print("after thread:", pointer.x, pointer.y, pointer.z, ffi.string(pointer.test))
