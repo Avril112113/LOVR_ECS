@@ -18,11 +18,31 @@ local function ComponentDefToCType(definition)
 	)
 	end
 	table.insert(s, "}")
-	print(table.concat(s))
-	return ffi.typeof(table.concat(s)), ffi.typeof(table.concat(s) .. "*")
+	local ctype = ffi.typeof(table.concat(s))
+	---@diagnostic disable-next-line: redundant-parameter
+	local ctypeptr = ffi.typeof("$ *", ctype)
+	return ctype, ctypeptr
 end
 local function CreateComponentPtr(ComponentDef, blob)
-	return ffi.cast(ComponentDef.ctypeptr, blob:getPointer())
+	return setmetatable({
+		_ptr=ffi.cast(ComponentDef.ctypeptr, blob:getPointer())
+	}, {
+		__newindex = function(self, index, value)
+			local field = ComponentDef.definition[index]
+			if field ~= nil and field.maxLength ~= nil and #value >= field.maxLength then
+				error("Attempt to set string beyond maxLength of \"" .. tostring(index) .. "\". (note, string max length is field.maxLength-1)")
+			end
+			rawget(self, "_ptr")[index] = value
+		end,
+		__index = function (self, index)
+			local field = ComponentDef.definition[index]
+			local value = rawget(self, "_ptr")[index]
+			if field ~= nil and field.maxLength ~= nil then
+				value = ffi.string(value)
+			end
+			return value
+		end
+	})
 end
 local function CreateComponentBlob(ComponentDef)
 	local blob = lovr.data.newBlob(ffi.sizeof(ComponentDef.ctype), "<Component: " .. ComponentDef.name .. ">")
@@ -42,6 +62,9 @@ local TestComponentDef = {
 		{field="test", default="", maxLength=64},
 	}
 }
+for i, field in pairs(TestComponentDef.definition) do
+	TestComponentDef.definition[field.field] = field
+end
 TestComponentDef.ctype, TestComponentDef.ctypeptr = ComponentDefToCType(TestComponentDef.definition)
 
 return {

@@ -13,9 +13,9 @@ local channel = lovr.thread.getChannel("designing_shtuff_thread")
 local componentBlob = channel:pop(true)
 
 local pointer = Common.CreateComponentPtr(Common.TestComponentDef, componentBlob)
-print("from thread:", pointer.x, pointer.y, pointer.z, ffi.string(pointer.test))
+print("from thread:", pointer.x, pointer.y, pointer.z, pointer.test)
 pointer.x = 100
 pointer.y = 200
 pointer.z = 5500
-pointer.test = "Threading things :D"
-print("from thread, after change:", pointer.x, pointer.y, pointer.z, ffi.string(pointer.test))
+pointer.test = "Threading things :D" .. string.rep("A", 64-19-1)
+print("from thread, after change:", pointer.x, pointer.y, pointer.z, pointer.test)
