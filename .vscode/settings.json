@@ -7,14 +7,5 @@
 		".vscode",
 		"old"
 	],
-	"Lua.workspace.checkThirdParty": false,
-	"files.associations": {
-		"*.t": "lua",
-		"*.rockspec": "lua",
-		"*.peg": "relabel",
-		"*.yasm": "yasm",
-		"*.succ": "yaml",
-		"*.txt": "plaintext",
-		"fpconv.h": "c"
-	}
+	"Lua.workspace.checkThirdParty": false
 }
